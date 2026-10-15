@@ -1,0 +1,13 @@
+backend/.venv
+backend/.env
+backend/*.db
+frontend/node_modules
+frontend/dist
+.DS_Store
+
+# DevSecOps Agent local runtime
+.env
+backend/docker_inspector.db
+backend/*.db
+backend/__pycache__/
+**/__pycache__/
