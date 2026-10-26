@@ -1,0 +1,102 @@
+name: DevSecOps Agent CI/CD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    name: Build and verify Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t devsecops-agent-backend:ci ./backend
+
+      - name: Build frontend image
+        run: docker build --build-arg VITE_API_BASE="" -t devsecops-agent-frontend:ci ./frontend
+
+  deploy:
+    name: Deploy to EC2 through AWS SSM
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION || 'us-west-2' }}
+      EC2_INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
+    steps:
+      - name: Configure AWS credentials with GitHub OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: GitHubActionsDevSecOpsDeploy
+
+      - name: Validate deployment configuration
+        shell: bash
+        run: |
+          if [[ -z "${EC2_INSTANCE_ID}" ]]; then
+            echo "Missing repository variable EC2_INSTANCE_ID"
+            exit 1
+          fi
+          if [[ -z "${{ secrets.AWS_ROLE_ARN }}" ]]; then
+            echo "Missing repository secret AWS_ROLE_ARN"
+            exit 1
+          fi
+
+      - name: Deploy on EC2 using SSM
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          COMMAND_ID=$(aws ssm send-command \
+            --region "$AWS_REGION" \
+            --instance-ids "$EC2_INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy DevSecOps Agent from GitHub Actions" \
+            --parameters '{"commands":["sudo -u ubuntu -H bash -lc \"cd /home/ubuntu/devsecops-agent && git pull --ff-only origin main && docker compose up -d --build && docker compose ps\""]}' \
+            --query 'Command.CommandId' \
+            --output text)
+
+          echo "SSM command ID: $COMMAND_ID"
+
+          for attempt in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --region "$AWS_REGION" \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$EC2_INSTANCE_ID" \
+              --query 'Status' \
+              --output text 2>/dev/null || true)
+
+            case "$STATUS" in
+              Success)
+                aws ssm get-command-invocation \
+                  --region "$AWS_REGION" \
+                  --command-id "$COMMAND_ID" \
+                  --instance-id "$EC2_INSTANCE_ID" \
+                  --query 'StandardOutputContent' \
+                  --output text
+                exit 0
+                ;;
+              Failed|Cancelled|TimedOut|Cancelling)
+                aws ssm get-command-invocation \
+                  --region "$AWS_REGION" \
+                  --command-id "$COMMAND_ID" \
+                  --instance-id "$EC2_INSTANCE_ID" \
+                  --query '{Status:Status,Error:StandardErrorContent,Output:StandardOutputContent}' \
+                  --output json
+                exit 1
+                ;;
+            esac
+            sleep 10
+          done
+
+          echo "Timed out waiting for the SSM deployment command."
+          exit 1
