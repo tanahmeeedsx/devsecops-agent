@@ -1,9 +1,9 @@
-```yaml
 name: DevSecOps Agent CI/CD
 
-on:
+"on":
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -14,7 +14,6 @@ jobs:
   build:
     name: Build and verify Docker images
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -112,4 +111,3 @@ jobs:
 
           echo "Timed out waiting for the SSM deployment command."
           exit 1
-```
