@@ -1,90 +1,74 @@
-#                                              DevSecOps Agent
+# DevSecOps Agent — AI-Powered Container & Cloud Security Platform
 
 <p align="center">
-  <img src="https://img.shields.io/badge/DevSecOps-Security%20Automation-176B87?style=for-the-badge" alt="DevSecOps Security Automation" />
-  <img src="https://img.shields.io/badge/AI-Powered-6C5CE7?style=for-the-badge" alt="AI Powered" />
-  <img src="https://img.shields.io/badge/Cloud-Multi--Cloud-232F3E?style=for-the-badge" alt="Multi Cloud" />
-  <img src="https://img.shields.io/badge/Deployment-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Deployment" />
+  <img src="https://img.shields.io/badge/AI-Powered-7C3AED?style=for-the-badge&logo=openai&logoColor=white" alt="AI Powered" />
+  <img src="https://img.shields.io/badge/DevSecOps-Security%20Automation-176B87?style=for-the-badge" alt="DevSecOps" />
+  <img src="https://img.shields.io/badge/Multi--Cloud-AWS%20%7C%20GCP%20%7C%20Azure-232F3E?style=for-the-badge&logo=icloud&logoColor=white" alt="Multi Cloud" />
 </p>
 
 <p align="center">
-  An AI-powered security and infrastructure operations platform that brings vulnerability scanning, container inspection, cloud resource visibility, and intelligent remediation into one dashboard.
+  An intelligent security operations dashboard for container inspection, vulnerability scanning, cloud infrastructure visibility, and AI-assisted remediation.
+</p>
+
+<p align="center">
+  <a href="https://github.com/tanahmeeedsx/devsecops-agent">Repository</a> ·
+  <a href="https://github.com/tanahmeeedsx/devsecops-agent/issues">Issues</a>
 </p>
 
 ---
 
+## Technology Stack
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=python,javascript,css,docker,aws,git,github&theme=dark" alt="Python, JavaScript, CSS, Docker, AWS, Git and GitHub" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Trivy-Vulnerability%20Scanning-1904DA?style=flat-square" alt="Trivy" />
+  <img src="https://img.shields.io/badge/Docker%20Compose-Container%20Orchestration-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose" />
+  <img src="https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?style=flat-square&logo=githubactions&logoColor=white" alt="GitHub Actions" />
+  <img src="https://img.shields.io/badge/AWS%20SSM-Remote%20Operations-FF9900?style=flat-square&logo=amazonaws&logoColor=white" alt="AWS Systems Manager" />
+</p>
+
 ## Overview
 
-**DevSecOps Agent** is a security-focused operations platform designed to simplify infrastructure monitoring, vulnerability detection, and cloud security workflows.
-
-It combines container-level diagnostics, automated security scanning, cloud resource inspection, and AI-assisted analysis to help engineers identify risks, investigate issues, and make informed remediation decisions from a centralized dashboard.
-
-The project brings DevSecOps practices closer to everyday infrastructure operations by connecting application security, container runtime visibility, and cloud infrastructure management in one place.
-
-## Key Capabilities
-
-### Container Security & Diagnostics
-
-- Inspect local Docker containers and their runtime status.
-- Review container logs, health checks, CPU usage, and memory consumption.
-- Scan container images for known vulnerabilities using Trivy.
-- Analyze findings and generate AI-assisted security insights.
-
-### Cloud Infrastructure Security
-
-- Inspect AWS EC2 infrastructure and security group configurations.
-- Access EC2 Docker environments through AWS Systems Manager (SSM).
-- Inspect Amazon ECR container image repositories.
-- Review S3 resources and IAM-related configurations.
-
-### AI-Assisted Security Analysis
-
-- Interpret security findings and infrastructure diagnostics.
-- Summarize potential risks in a more actionable format.
-- Generate remediation reports to support troubleshooting and security improvements.
-
-### Unified Operations Dashboard
-
-- Centralized interface for infrastructure and security workflows.
-- Visibility into container health and vulnerability findings.
-- Access to local Docker environments and supported AWS resources.
-- A single workspace for investigation and remediation planning.
+DevSecOps Agent brings container security, infrastructure inspection, and AI-assisted analysis into a centralized dashboard. It helps engineers investigate vulnerabilities, inspect runtime health, review cloud configurations, and understand potential security risks.
 
 ## Architecture
 
 ```mermaid
 flowchart TB
-    U["DevOps / Security Engineer"]
+    USER["DevOps / Security Engineer"]
     UI["Web Dashboard<br/>JavaScript · CSS"]
-    API["Backend API<br/>Python"]
-    
-    subgraph LOCAL["Container Environment"]
+    API["Python Backend API"]
+
+    subgraph CONTAINERS["Container Security"]
         DOCKER["Docker Engine"]
-        INSPECT["Container Inspection<br/>Logs · Health · Resources"]
-        TRIVY["Trivy<br/>Vulnerability Scanning"]
+        INSPECT["Runtime Inspection<br/>Logs · Health · Resources"]
+        TRIVY["Trivy<br/>Image Vulnerability Scanning"]
     end
 
-    subgraph AWS["AWS Cloud"]
-        SSM["Systems Manager<br/>SSM"]
-        EC2["EC2 · Remote Docker"]
-        ECR["Elastic Container Registry"]
-        S3["Amazon S3"]
-        IAM["IAM · Security Groups"]
+    subgraph CLOUD["Cloud Infrastructure"]
+        AWS["AWS APIs"]
+        SSM["AWS Systems Manager"]
+        EC2["EC2 Docker Containers"]
+        ECS["ECS / ECR"]
+        STORAGE["S3 · IAM · Security Groups"]
     end
 
-    AI["AI Analysis Engine"]
-    REPORT["Security Findings<br/>Analysis · Remediation Reports"]
+    AI["AI Analysis"]
+    REPORT["Findings & Remediation Reports"]
 
-    U --> UI
+    USER --> UI
     UI <--> API
     API --> DOCKER
     DOCKER --> INSPECT
     API --> TRIVY
+    API --> AWS
     API --> SSM
     SSM --> EC2
-    API --> ECR
-    API --> S3
-    API --> IAM
+    AWS --> ECS
+    AWS --> STORAGE
     INSPECT --> AI
     TRIVY --> AI
     API --> AI
@@ -92,89 +76,58 @@ flowchart TB
     REPORT --> UI
 ```
 
-The dashboard communicates with the backend API, which coordinates inspection and security operations across supported environments. Container diagnostics and vulnerability findings can be analyzed to provide security insights and remediation guidance.
+## Core Features
 
-Cloud operations use AWS services and the relevant access permissions to interact with infrastructure resources.
-
-## Technology Stack
-
-<p>
-  <img src="https://skillicons.dev/icons?i=python,js,css,docker,aws,git,github" alt="Python, JavaScript, CSS, Docker, AWS, Git, GitHub" />
-</p>
-
-| Area | Technologies |
-|---|---|
-| Backend | Python |
-| Frontend | JavaScript, CSS |
-| Containerization | Docker, Docker Compose |
-| Vulnerability Scanning | Trivy |
-| Cloud Infrastructure | AWS EC2, ECR, S3, IAM |
-| Remote Operations | AWS Systems Manager (SSM) |
-| CI/CD | GitHub Actions |
-| Cloud Authentication | GitHub Actions OIDC |
-| AI Capabilities | AI-assisted analysis and remediation reporting |
-
-## Security & DevSecOps Focus
-
-The project focuses on integrating security into infrastructure operations rather than treating it as a separate, final-stage activity.
-
-- **Shift-left security:** Identify container vulnerabilities during development and delivery workflows.
-- **Runtime visibility:** Inspect container health, logs, and resource utilization.
-- **Cloud security:** Examine supported AWS infrastructure and access configurations.
-- **Automated delivery:** Use GitHub Actions to build Docker images and initiate remote deployment workflows.
-- **Credential security:** Use GitHub Actions OpenID Connect (OIDC) for AWS role assumption rather than relying on long-lived AWS access keys in the deployment workflow.
-- **Actionable remediation:** Turn diagnostic and vulnerability findings into understandable security reports.
+- **Container Inspection** — View container status, logs, health checks, CPU and memory usage.
+- **Vulnerability Scanning** — Scan container images with Trivy to identify known vulnerabilities.
+- **Cloud Security** — Inspect supported AWS resources, including EC2, ECS, ECR, S3, IAM and security groups.
+- **Remote EC2 Operations** — Inspect Docker containers on EC2 through AWS Systems Manager (SSM).
+- **AI-Assisted Analysis** — Interpret findings and generate security insights and remediation reports.
+- **Unified Dashboard** — Access container diagnostics and supported cloud security workflows from one interface.
 
 ## CI/CD & Deployment
 
-The repository includes a GitHub Actions workflow designed to:
+The GitHub Actions workflow automates the application's build and deployment process.
 
-1. Build and verify the backend and frontend Docker images.
-2. Authenticate to AWS using GitHub Actions OIDC.
-3. Send a deployment command to the configured EC2 instance through AWS Systems Manager.
-4. Update the application and rebuild its Docker Compose services on the target environment.
-
-The deployment workflow separates image-build verification from the remote deployment stage.
-
-## Project Highlights
-
-- AI-assisted DevSecOps operations in a unified dashboard.
-- Docker container inspection and runtime diagnostics.
-- Trivy-based vulnerability scanning.
-- AWS infrastructure inspection and remote operations.
-- Security analysis and remediation reporting.
-- OIDC-based AWS authentication for CI/CD.
-- Docker Compose-based application deployment.
+1. Builds the backend and frontend Docker images.
+2. Authenticates to AWS using GitHub Actions OIDC.
+3. Sends a deployment command to EC2 through AWS Systems Manager.
+4. Pulls the latest code and rebuilds services using Docker Compose.
 
 ## Repository Structure
 
 ```text
 devsecops-agent/
-├── backend/                 # Backend application
-├── frontend/                # Web dashboard
-├── docs/                    # Project documentation
-├── prompts/                 # AI analysis prompts
-├── .github/
-│   └── workflows/
-│       └── deploy.yml       # CI/CD and SSM deployment
-├── docker-compose.yml       # Container orchestration
-├── .env.example             # Environment configuration template
-├── DOCKER-RUNBOOK.md        # Docker operations reference
+├── .github/workflows/
+│   └── deploy.yml
+├── backend/
+├── frontend/
+├── docs/
+├── prompts/
+├── docker-compose.yml
+├── .env.example
+├── DOCKER-RUNBOOK.md
 └── .gitignore
 ```
 
+## Security Focus
+
+- Container vulnerability detection
+- Infrastructure and runtime visibility
+- Cloud configuration inspection
+- OIDC-based AWS authentication for CI/CD
+- AI-assisted security analysis and remediation guidance
+
 ## Project Vision
 
-The long-term vision of DevSecOps Agent is to make infrastructure security more accessible, observable, and actionable by bringing container diagnostics, vulnerability intelligence, cloud operations, and AI-assisted remediation together.
-
-The goal is to help engineers move from **detecting issues** to **understanding risks** and **making better remediation decisions** through a unified operational experience.
+To make infrastructure security more observable and actionable by combining container diagnostics, cloud security inspection, vulnerability intelligence, and AI-assisted remediation in one platform.
 
 ---
 
 <p align="center">
-  Built for secure infrastructure, automated operations, and continuous improvement.
+  <a href="https://github.com/tanahmeeedsx">Tanjim Ahmed</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/tanahmeeedsx">Tanjim Ahmed</a>
+  <sub>Secure Infrastructure · Intelligent Automation · Continuous Security</sub>
 </p>
