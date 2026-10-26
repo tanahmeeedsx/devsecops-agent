@@ -11,11 +11,6 @@
   An AI-powered security and infrastructure operations platform that brings vulnerability scanning, container inspection, cloud resource visibility, and intelligent remediation into one dashboard.
 </p>
 
-<p align="center">
-  <a href="https://github.com/tanahmeeedsx/devsecops-agent">Repository</a> •
-  <a href="https://github.com/tanahmeeedsx/devsecops-agent/issues">Issues</a>
-</p>
-
 ---
 
 ## Overview
